@@ -1,0 +1,42 @@
+#include "record_parameters.hpp"
+#include "util.hpp"
+
+namespace fracture {
+namespace block_2d {
+
+Record_parameters::Record_parameters() {}
+
+Record_parameters::Record_parameters(const Sample & s) :
+        Record_parameters(
+                s.get_num_ims(),
+                s.get_camera().get_image_width(),
+                s.get_camera().get_image_height(),
+                s.get_camera().get_frames_per_second())
+{}
+
+Record_parameters::Record_parameters(unsigned num_ims, unsigned im_w, unsigned im_h, double cam_fps) :
+        num_ims_(num_ims),
+        im_w_(im_w),
+        im_h_(im_h),
+        cam_fps_(cam_fps)
+{}
+
+Record_parameters Record_parameters::from_sample(const Sample & from) { return Record_parameters(from); }
+void Record_parameters::to_sample(Sample & to) const
+{
+    util::throw_err(__FILE__, __LINE__);
+}
+
+template<class Archive>
+void Record_parameters::serialize(Archive & ar, const unsigned int version)
+{
+    ar & num_ims_ & im_w_ & im_h_ & cam_fps_;
+}
+
+unsigned Record_parameters::get_num_ims() const { return num_ims_; }
+unsigned Record_parameters::get_im_w() const { return im_w_; }
+unsigned Record_parameters::get_im_h() const { return im_h_; }
+double Record_parameters::get_cam_fps() const { return cam_fps_; }
+
+}
+}

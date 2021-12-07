@@ -1,0 +1,74 @@
+#include "record_latent_rvs.hpp"
+
+namespace fracture {
+namespace block_2d{
+
+Record_latent_rvs::Record_latent_rvs(){}
+
+Record_latent_rvs::Record_latent_rvs(const Sample & s) :
+        Record_latent_rvs(
+                s.get_camera().get_camera_top(),
+                s.get_initial_block_rvs().get_initial_x(),
+                s.get_initial_block_rvs().get_initial_y(),
+                s.get_initial_block_rvs().get_initial_width(),
+                s.get_initial_block_rvs().get_initial_height(),
+                s.get_fracture_rvs().get_fracture_location(),
+                s.get_fracture_rvs().get_right_x_momentum(),
+                s.get_fracture_rvs().get_left_angular_momentum()
+        )
+{}
+
+Record_latent_rvs::Record_latent_rvs(
+        double c_t,
+        double init_x,
+        double init_y,
+        double init_w,
+        double init_h,
+        double frac_loc,
+        double r_x_mom,
+        double l_ang_mom) :
+
+        c_t_(c_t),
+        init_x_(init_x),
+        init_y_(init_y),
+        init_w_(init_w),
+        init_h_(init_h),
+        frac_loc_(frac_loc),
+        r_x_mom_(r_x_mom),
+        l_ang_mom_(l_ang_mom)
+{}
+
+Record_latent_rvs Record_latent_rvs::from_sample(const Sample & from)
+{
+    return Record_latent_rvs(from);
+}
+
+void Record_latent_rvs::to_sample(Sample & to) const
+{
+    to.set_camera_top(c_t_);
+    to.set_block_initial_x(init_x_);
+    to.set_block_initial_y(init_y_);
+    to.set_block_initial_width(init_w_);
+    to.set_block_initial_height(init_h_);
+    to.set_fracture_location(frac_loc_);
+    to.set_right_x_momentum(r_x_mom_);
+    to.set_left_angular_momentum(l_ang_mom_);
+}
+
+template<class Archive>
+void Record_latent_rvs::serialize(Archive & ar, const unsigned int version)
+{
+    ar & c_t_ & init_x_ & init_y_ & init_w_ & init_h_ & frac_loc_ & r_x_mom_ & l_ang_mom_;
+}
+
+double Record_latent_rvs::get_c_t() const { return c_t_; }
+double Record_latent_rvs::get_init_x() const { return init_x_; }
+double Record_latent_rvs::get_init_y() const { return init_y_; }
+double Record_latent_rvs::get_init_w() const { return init_w_; }
+double Record_latent_rvs::get_init_h() const { return init_h_;}
+double Record_latent_rvs::get_frac_loc() const { return frac_loc_; }
+double Record_latent_rvs::get_r_x_mom() const { return r_x_mom_; }
+double Record_latent_rvs::get_l_ang_mom() const { return l_ang_mom_; }
+
+}
+}

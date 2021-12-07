@@ -1,0 +1,40 @@
+#include "record.hpp"
+
+namespace fracture {
+namespace block_2d {
+
+Record::Record() {}
+
+Record::Record(const Sample & s) :
+    p_(s),
+    l_(s),
+    o_(s)
+{}
+
+Record Record::from_sample(const Sample & from)
+{
+    return Record(from);
+}
+
+void Record::to_sample(Sample &to) const
+{
+    p_.to_sample(to);
+    l_.to_sample(to);
+    o_.to_sample(to);
+}
+
+template<class Archive>
+void Record::serialize(Archive & ar, const unsigned int version)
+{
+    ar & p_ & l_ & o_;
+}
+
+Record_parameters & Record::get_parameters() { return p_; }
+const Record_parameters & Record::get_parameters() const { return p_; }
+Record_latent_rvs & Record::get_latent_rvs() { return l_; }
+const Record_latent_rvs & Record::get_latent_rvs() const { return l_; }
+Record_observed_rvs & Record::get_observed_rvs() { return o_; }
+const Record_observed_rvs & Record::get_observed_rvs() const { return o_; }
+
+}
+}

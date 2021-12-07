@@ -1,0 +1,55 @@
+#ifndef SAMPLE_LATENT_RVS_HPP
+#define SAMPLE_LATENT_RVS_HPP
+
+#include <boost/serialization/access.hpp>
+
+#include "sample.hpp"
+
+namespace fracture {
+namespace block_2d{
+
+class Record_latent_rvs
+{
+    friend class boost::serialization::access;
+public:
+    Record_latent_rvs();
+    Record_latent_rvs(const Sample & s);
+    Record_latent_rvs(
+            double c_t,
+            double init_x,
+            double init_y,
+            double init_w,
+            double init_h,
+            double frac_loc,
+            double r_x_mom,
+            double l_ang_mom);
+
+    static Record_latent_rvs from_sample(const Sample & from);
+    void to_sample(Sample & to) const;
+
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version);
+
+    double get_c_t() const;
+    double get_init_x() const;
+    double get_init_y() const;
+    double get_init_w() const;
+    double get_init_h() const;
+    double get_frac_loc() const;
+    double get_r_x_mom() const;
+    double get_l_ang_mom() const;
+private:
+    double c_t_;
+    double init_x_;
+    double init_y_;
+    double init_w_;
+    double init_h_;
+    double frac_loc_;
+    double r_x_mom_;
+    double l_ang_mom_;
+};
+
+}
+}
+
+#endif // SAMPLE_LATENT_RVS_HPP

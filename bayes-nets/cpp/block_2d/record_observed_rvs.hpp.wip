@@ -1,0 +1,41 @@
+#ifndef SAMPLE_OBSERVED_RVS_HPP
+#define SAMPLE_OBSERVED_RVS_HPP
+
+#include <memory>
+
+#include "sample.hpp"
+
+namespace fracture {
+namespace block_2d{
+
+class Record_observed_rvs
+{
+public:
+    Record_observed_rvs();
+    Record_observed_rvs(const Sample & s);
+
+    static Record_observed_rvs from_sample(const Sample & from);
+    void to_sample(Sample & to) const;
+
+    template<class Archive>
+    void serialize(Archive &ar, const unsigned int version);
+
+    double get_parent_block_geometry(unsigned frame, unsigned vert, unsigned dim);
+    double get_child_block_num_frames() const;
+    double get_left_block_geometry(unsigned frame, unsigned vert, unsigned dim);
+    double get_right_block_geometry(unsigned frame, unsigned vert, unsigned dim);
+
+private:
+    // shared ptrs in case of copy construction shenanagans, so we don't end up freeing
+    // something that somebody else wants.
+    std::shared_ptr<double> parent_block_geometry;
+
+    unsigned child_block_num_frames;
+    std::shared_ptr<double> left_block_geometry;
+    std::shared_ptr<double> right_block_geometry;
+};
+
+}
+}
+
+#endif // SAMPLE_OBSERVED_RVS_HPP

@@ -1,0 +1,5 @@
+This is basically needed because of some assumptions that the alimbic library 
+makes. Namely, it assumes that all OpenEXR header files can be found on the 
+include path.
+
+g++ main.cpp -lAlembic -lIlmImf -lIlmImfUtil -ljsoncpp -I /usr/include/OpenEXR/ -o alembic-pointcloud-converter

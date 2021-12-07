@@ -1,0 +1,37 @@
+#ifndef RECORD_PARAMETERS_HPP
+#define RECORD_PARAMETERS_HPP
+
+#include "sample.hpp"
+
+namespace fracture {
+namespace block_2d {
+
+class Record_parameters
+{
+public:
+    Record_parameters();
+    Record_parameters(const Sample & s);
+    Record_parameters(unsigned num_ims, unsigned im_w, unsigned im_h, double cam_fps);
+
+    static Record_parameters from_sample(const Sample & from);
+    void to_sample(Sample & to) const;
+
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version);
+
+    unsigned get_num_ims() const;
+    unsigned get_im_w() const;
+    unsigned get_im_h() const;
+    double get_cam_fps() const;
+
+private:
+    unsigned num_ims_;
+    unsigned im_w_;
+    unsigned im_h_;
+    double cam_fps_;
+};
+
+}
+}
+
+#endif // RECORD_PARAMETERS_HPP

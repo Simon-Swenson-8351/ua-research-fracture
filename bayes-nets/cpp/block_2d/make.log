@@ -1,0 +1,13 @@
+./build all
+KJB_SRC_PATH: /home/simon/svn-repos/ivilab/src/
+ 
+Build start for 'all' at Fri 13 Dec 2019 06:24:36 PM MST
+ 
+make[1]: Nothing to be done for 'file_list.new'.
+make[1]: Nothing to be done for 'include_lines.new'.
+make[1]: Nothing to be done for 'depend'.
+make[1]: Nothing to be done for 'depend_again'.
+make[1]: Nothing to be done for 'dir_made'.
+make[1]: *** No rule to make target 'diff_gradient.h', needed by 'linux_x86_64_unknown/prod/g++/metropolis_hastings.o'.
+make[1]: *** No rule to make target 'diff_util.h', needed by 'linux_x86_64_unknown/prod/g++/metropolis_hastings.o'.
+make[1]: Target 'all' not remade because of errors.

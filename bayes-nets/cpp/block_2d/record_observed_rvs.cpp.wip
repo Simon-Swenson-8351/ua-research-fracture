@@ -1,0 +1,40 @@
+#include "record_observed_rvs.hpp"
+#include "util.hpp"
+
+namespace fracture {
+namespace block_2d{
+
+Record_observed_rvs::Record_observed_rvs() :
+        parent_block_geometry(nullptr),
+        left_block_geometry(nullptr),
+        right_block_geometry(nullptr)
+{}
+
+Record_observed_rvs::Record_observed_rvs(const Sample & s)
+{
+    parent_block_geometry = std::shared_ptr<double>(new double[4 * 3]);
+    child_block_num_frames = s.get_num_ims() - 1;
+    left_block_geometry = std::shared_ptr<double>(new double[child_block_num_frames * 4 * 3]);
+    right_block_geometry = std::shared_ptr<double>(new double[child_block_num_frames * 4 * 3]);
+}
+
+Record_observed_rvs Record_observed_rvs::from_sample(const Sample & from)
+{
+    return Record_observed_rvs(from);
+}
+
+void Record_observed_rvs::to_sample(Sample & to) const
+{
+    util::throw_err(__FILE__, __LINE__);
+}
+
+template<class Archive>
+void Record_observed_rvs::serialize(Archive &ar, const unsigned int version);
+
+double Record_observed_rvs::get_parent_block_geometry(unsigned frame, unsigned vert, unsigned dim);
+double Record_observed_rvs::get_child_block_num_frames() const;
+double Record_observed_rvs::get_left_block_geometry(unsigned frame, unsigned vert, unsigned dim);
+double Record_observed_rvs::get_right_block_geometry(unsigned frame, unsigned vert, unsigned dim);
+
+}
+}

@@ -1,0 +1,102 @@
+#!/bin/csh -f
+
+# set echo
+
+##################################################################################
+#
+# Build script 
+# ============
+#
+# This file is generally called by "make". It can also be called directly. The
+# main purpose is to normalize the make environment, and to implement some
+# functionality that is difficult to do in efficiently, or robustly, or portably
+# using make. 
+#
+# This file should be a copy of: 
+#     ${KJB_SRC_PATH}/Make/scripts/build 
+#
+# The chief functionallity implemented here is to determine the value of
+# KJB_SRC_PATH, followed by sourcing ${KJB_SRC_PATH}Make/scripts/build-2. 
+#
+# This is a copy of ${KJB_SRC_PATH}/Make/scripts/build so that source directories can
+# be moved up and down in the src directory tree without additional manual
+# operations. If we instead were to link to ${KJB_SRC_PATH}/Make/scripts/build, then
+# changing the depth in the tree would require repairing the link by hand.  
+#
+
+##################################################################################
+
+# This next part is shared by all files in Make whose names begin with "build",
+# AND kjb_add_makefiles. Updates should be propogated. 
+
+if ($?FORCE_KJB_SRC_DIR) then 
+    if (-e "${FORCE_KJB_SRC_DIR}/Make/init_compile") then 
+        setenv KJB_SRC_PATH "${FORCE_KJB_SRC_DIR}"
+    else 
+        bash -c 'echo "Env var FORCE_KJB_SRC_DIR is set to ${FORCE_KJB_SRC_DIR}, but ${FORCE_KJB_SRC_DIR}/Make/init_compile does not exist." >&2'
+        exit 1 
+    endif 
+else  
+    # Use env var for KJB_DIRS for better error reporting via bash sub-shell.
+    if ($?FORCE_KJB_DIR) then
+        setenv KJB_DIRS "${FORCE_KJB_DIR}"
+    else
+        setenv KJB_DIRS ". kjb KJB ivi IVI src"
+    endif 
+
+    # Find out where we are in the source tree. In particular, we want to find a
+    # dir that has $kjb_dir as a subdir, which has Make as a sub-dir and
+    # Make/init_compile as a file in that. 
+
+    set found = 0
+    set kjb_top = ""
+
+    pushd `pwd` > /dev/null
+
+    while ("`pwd`" != "/")
+        foreach kjb_dir (${KJB_DIRS}) 
+            if ("${kjb_dir}" == ".") then
+                set kjb_dir = ""
+            else
+                set kjb_dir = "${kjb_dir}/"
+            endif 
+
+            if (-e "${kjb_dir}Make/init_compile") then
+                set found = 1
+                break
+            endif 
+        end
+
+        if (${found}) break
+
+        set kjb_top = "../${kjb_top}"
+
+        cd ..
+    end
+
+    popd > /dev/null
+
+    if (${found}) then
+        if ("${kjb_dir}" == "") then
+            set kjb_dir = "./"
+        endif 
+
+        setenv KJB_SRC_PATH "${kjb_top}${kjb_dir}"
+    else 
+        # We cannot use P_STDERR here because we might not have defined it yet.
+        bash -c 'echo " " >&2'
+        bash -c 'echo "This directory is not below a directory with KJB installed." >&2'
+        bash -c 'echo "Valid directories for KJB in this context: ${KJB_DIRS}." >&2'
+        bash -c 'echo "To experiment with a temporary fix, try setting FORCE_KJB_SRC_DIR." >&2'
+        bash -c 'echo "For a more permanent fix, contact Kobus." >&2'
+    endif 
+endif 
+
+pushd ${KJB_SRC_PATH} > /dev/null
+    setenv KJB_SRC_PATH "${cwd}/"
+popd > /dev/null
+
+echo KJB_SRC_PATH: $KJB_SRC_PATH
+
+source ${KJB_SRC_PATH}Make/scripts/build-2 
+

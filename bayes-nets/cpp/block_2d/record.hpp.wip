@@ -1,0 +1,43 @@
+#ifndef SAMPLE_RVS_HPP
+#define SAMPLE_RVS_HPP
+
+#include <boost/serialization/access.hpp>
+
+#include "sample.hpp"
+#include "record_parameters.hpp"
+#include "record_latent_rvs.hpp"
+#include "record_observed_rvs.hpp"
+
+namespace fracture {
+namespace block_2d {
+
+class Record
+{
+    friend class boost::serialization::access;
+public:
+    Record();
+    Record(const Sample & s);
+
+    static Record from_sample(const Sample & from);
+    void to_sample(Sample & to) const;
+
+    template<class Archive>
+    void serialize(Archive & ar, const unsigned int version);
+
+    Record_parameters & get_parameters();
+    const Record_parameters & get_parameters() const;
+    Record_latent_rvs & get_latent_rvs();
+    const Record_latent_rvs & get_latent_rvs() const;
+    Record_observed_rvs & get_observed_rvs();
+    const Record_observed_rvs & get_observed_rvs() const;
+
+private:
+    Record_parameters p_;
+    Record_latent_rvs l_;
+    Record_observed_rvs o_;
+};
+
+}
+}
+
+#endif // SAMPLE_RVS_HPP
